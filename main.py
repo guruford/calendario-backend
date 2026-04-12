@@ -56,8 +56,8 @@ def get_cmi_session():
     soup = BeautifulSoup(login_page.text, "html.parser")
 
     payload = {
-        "rut":  cmi_rut,
-        "pass": cmi_pass,
+        "rut":  cmi_usuario,
+        "pass": cmi_clave,
     }
 
     # Capturar campos hidden del formulario
