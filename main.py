@@ -37,12 +37,12 @@ CURSO_ID   = "255"
 PERFIL_ID  = "26"
 
 def get_credentials():
-    return os.environ.get("CMI_RUT", ""), os.environ.get("CMI_PASS", "")
+    return os.environ.get("CMI_USUARIO", ""), os.environ.get("CMI_CLAVE", "")
 
 
 def get_cmi_session():
     """Inicia sesión en CMI Escolar."""
-    cmi_rut, cmi_pass = get_credentials()
+    cmi_usuario, cmi_clave = get_credentials()
 
     session = requests.Session()
     session.headers.update({
@@ -77,7 +77,7 @@ def get_cmi_session():
 
     # Verificar éxito: si nos redirige a ficha.php o inicio.php, login ok
     if "Ingrese sus datos" in resp.text and "ficha.php" not in resp.url:
-        return None, "Login fallido — verifica CMI_RUT y CMI_PASS en Railway"
+        return None, "Login fallido — verifica CMI_USUARIO y CMI_CLAVE en Railway"
 
     return session, None
 
@@ -219,20 +219,20 @@ def health():
 def status():
     cmi_rut, cmi_pass = get_credentials()
     return jsonify({
-        "cmi_rut_configured":  bool(cmi_rut),
-        "cmi_pass_configured": bool(cmi_pass),
+        "cmi_usuario_configured":  bool(cmi_usuario),
+        "cmi_clave_configured": bool(cmi_clave),
         "alumno_id": ALUMNO_ID,
-        "ready": bool(cmi_rut and cmi_pass)
+        "ready": bool(cmi_usuario and cmi_clave)
     })
 
 
 @app.route("/api/calendario")
 def get_calendario():
-    cmi_rut, cmi_pass = get_credentials()
+    cmi_usuario, cmi_clave = get_credentials()
 
     if not cmi_rut or not cmi_pass:
         return jsonify({
-            "error": "Credenciales no configuradas. Agrega CMI_RUT y CMI_PASS en Railway → Variables."
+            "error": "Credenciales no configuradas. Agrega CMI_usuario y CMI_clave en Railway → Variables."
         }), 500
 
     session, err = get_cmi_session()
